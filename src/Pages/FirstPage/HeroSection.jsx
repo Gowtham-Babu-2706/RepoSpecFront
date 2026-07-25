@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 const HeroSection = () => {
   return (
-    <section className="mt-6 px-6 py-16 bg-white flex justify-center">
+    <section className=" px-6 py-16 bg-white flex justify-center">
       <div className="max-w-6xl text-center">
 
         {/* Badge */}
@@ -38,7 +38,7 @@ const HeroSection = () => {
           </Link>
 
           <Link
-            to={"/upload"}
+            to={"/repo-detail"}
             className="px-6 py-3 border border-gray-400 rounded-lg hover:bg-gray-50 transition"
           >
             Submit a Repo

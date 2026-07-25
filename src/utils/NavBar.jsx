@@ -1,73 +1,164 @@
+import React, { useState } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCodeBranch,
-  faXmark,
-  faBars,
+  faHome,
+  faChartBar,
+  faCompass,
+  faBook,
+  faUsers,
+  faMagnifyingGlassChart,
+  faFileAlt,
+  faHeadset,
+  faSignOutAlt,
+  faSignInAlt,
+  faUserPlus,
+  faUser,
 } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
-import { Link } from "react-router-dom";
+
+const TOP_NAV = [
+  { icon: faHome,     label: "Home",      href: "/" },
+  { icon: faChartBar, label: "Analytics", href: "/analytics" },
+  { icon: faCompass,  label: "Discovery", href: "/search" },
+  { icon: faBook,     label: "My Repos",  href: "/my-repos" },
+  { icon: faUsers,    label: "Community", href: "/community" },
+];
+
+const BOTTOM_NAV = [
+  { icon: faMagnifyingGlassChart, label: "Analyze Repo", href: "/analyze" },
+  { icon: faFileAlt,              label: "Docs",          href: "/docs" },
+  { icon: faHeadset,              label: "Support",       href: "/support" },
+];
 
 const NavBar = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  const itemLinks = [
-    { title: "Home", href: "/" },
-    { title: "Search", href: "/search" },
-    { title: "Upload", href: "/upload" },
-    { title: "About", href: "/about" },
-  ];
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
+
+  const isActive = (href) =>
+    href === "/" ? location.pathname === "/" : location.pathname.startsWith(href);
 
   return (
-    <nav className="w-full bg-white border-b border-gray-300 px-4 md:px-6 py-4 overflow-x-hidden">
+    <aside className="w-52 flex-shrink-0 h-screen bg-white border-r border-slate-100 flex flex-col justify-between py-4 px-2 shadow-sm sticky top-0 z-20">
 
-      <div className="max-w-7xl mx-auto flex items-center justify-between">
-
-        {/* Logo */}
-        <Link to="/" className="flex items-center gap-2 font-semibold text-base md:text-lg whitespace-nowrap">
-          <FontAwesomeIcon icon={faCodeBranch} />
+      {/* ── Logo ───────────────────────────────────────────── */}
+      <div className="flex flex-col gap-1">
+        <Link
+          to="/"
+          className="flex items-center gap-2 px-3 py-2 mb-2 font-bold text-slate-900 text-sm no-underline"
+        >
+          <div className="w-7 h-7 rounded-lg bg-green-600 flex items-center justify-center flex-shrink-0">
+            <FontAwesomeIcon icon={faCodeBranch} className="text-white text-xs" />
+          </div>
           RepoSpec
         </Link>
 
-        {/* Desktop Menu */}
-        <div className="hidden md:flex items-center gap-6 text-gray-600">
-          {itemLinks.map((item, idx) => (
-            <Link
-              key={idx}
-              to={item.href}
-              className="px-3 py-2 rounded-lg hover:bg-gray-200 hover:text-black transition"
-            >
-              {item.title}
-            </Link>
-          ))}
-        </div>
+        <div className="h-px bg-slate-100 mx-1 mb-2" />
 
-        {/* Mobile Toggle */}
-        <button
-          className="md:hidden text-xl"
-          onClick={() => setIsOpen(!isOpen)}
-        >
-          <FontAwesomeIcon icon={isOpen ? faXmark : faBars} />
-        </button>
+        {/* ── Top nav items ──────────────────────────────────── */}
+        {TOP_NAV.map(({ icon, label, href }) => {
+          const active = isActive(href);
+          return (
+            <Link
+              key={href}
+              to={href}
+              className={[
+                "flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm transition-all no-underline",
+                active
+                  ? "bg-green-50 text-green-700 font-semibold"
+                  : "text-slate-500 hover:text-slate-800 hover:bg-slate-50 font-medium",
+              ].join(" ")}
+            >
+              <FontAwesomeIcon icon={icon} className="w-3.5 flex-shrink-0" />
+              {label}
+              {active && (
+                <span className="ml-auto w-1.5 h-1.5 rounded-full bg-green-500 flex-shrink-0" />
+              )}
+            </Link>
+          );
+        })}
       </div>
 
-      {/* Mobile Menu */}
-      {isOpen && (
-        <div className="md:hidden mt-4 border-t border-gray-200 pt-4 flex flex-col gap-3">
+      {/* ── Bottom section ─────────────────────────────────── */}
+      <div className="flex flex-col gap-1">
 
-          {itemLinks.map((item, idx) => (
+        {/* Bottom nav items */}
+        {BOTTOM_NAV.map(({ icon, label, href, accent }) => {
+          const active = isActive(href);
+          return (
             <Link
-              key={idx}
-              to={item.href}
-              className="py-2 text-gray-600"
-              onClick={() => setIsOpen(false)}
+              key={href}
+              to={href}
+              className={[
+                "flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-semibold transition-all no-underline",
+                accent
+                  ? "bg-green-600 text-white hover:bg-green-700 shadow-md shadow-green-200"
+                  : active
+                    ? "bg-green-50 text-green-700"
+                    : "text-slate-500 hover:text-slate-800 hover:bg-slate-50",
+              ].join(" ")}
             >
-              {item.title}
+              <FontAwesomeIcon icon={icon} className="w-3.5 flex-shrink-0" />
+              {label}
             </Link>
-          ))}
+          );
+        })}
 
-        </div>
-      )}
-    </nav>
+        <div className="h-px bg-slate-100 mx-1 my-2" />
+
+        {/* ── Auth section ───────────────────────────────────── */}
+        {user ? (
+          /* Logged-in: show user chip + logout */
+          <div className="flex flex-col gap-1">
+            <div className="flex items-center gap-2 px-3 py-2 bg-slate-50 rounded-lg">
+              <div className="w-6 h-6 rounded-full bg-green-600 flex items-center justify-center flex-shrink-0">
+                <FontAwesomeIcon icon={faUser} className="text-white text-[9px]" />
+              </div>
+              <span className="text-xs font-semibold text-slate-700 truncate">
+                {user.username}
+              </span>
+            </div>
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-semibold text-red-500 hover:bg-red-50 hover:text-red-600 transition-all cursor-pointer border-0 bg-transparent w-full text-left"
+            >
+              <FontAwesomeIcon icon={faSignOutAlt} className="w-3.5 flex-shrink-0" />
+              Logout
+            </button>
+          </div>
+        ) : (
+          /* Logged-out: show Login + Register */
+          <div className="flex flex-col gap-1">
+            <Link
+              to="/login"
+              className={[
+                "flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium transition-all no-underline",
+                isActive("/login")
+                  ? "bg-green-50 text-green-700 font-semibold"
+                  : "text-slate-500 hover:text-slate-800 hover:bg-slate-50",
+              ].join(" ")}
+            >
+              <FontAwesomeIcon icon={faSignInAlt} className="w-3.5 flex-shrink-0" />
+              Login
+            </Link>
+            <Link
+              to="/register"
+              className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-semibold bg-green-600 text-white hover:bg-green-700 transition-all no-underline shadow-sm shadow-green-200"
+            >
+              <FontAwesomeIcon icon={faUserPlus} className="w-3.5 flex-shrink-0" />
+              Register
+            </Link>
+          </div>
+        )}
+      </div>
+    </aside>
   );
 };
 

@@ -1,11 +1,11 @@
 import { faArrowRightLong, faSpinner, faFolderOpen } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { usePublicRepos } from "../../utils/axios/useUser";
+import { useGitHubRepos } from "../utils/axios/useUser";
 import { Link } from "react-router-dom";
-import { Card } from "../../utils/Card";
+import { MyReposPageCard } from "../utils/Card";
 
-const SideRepoByPage = () => {
-  const { data, loading, error, refetch } = usePublicRepos();
+const MyReposPage = () => {
+  const { data, loading, error, refetch } = useGitHubRepos();
 
   return (
     <section className="py-12 px-7 lg:py-16 bg-white">
@@ -45,7 +45,7 @@ const SideRepoByPage = () => {
         <>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 pt-10">
             {data.map((repo) => (
-              <Card key={repo.id} repo={repo} />
+              <MyReposPageCard key={repo.id} repo={repo} />
             ))}
           </div>
           <div className="flex justify-center mt-10">
@@ -64,4 +64,8 @@ const SideRepoByPage = () => {
   );
 };
 
-export default SideRepoByPage;
+export default MyReposPage;
+
+
+
+
