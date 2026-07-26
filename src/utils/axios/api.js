@@ -11,7 +11,7 @@
 import axios from "axios";
 
 const api = axios.create({
-    baseURL: "http://localhost:8081/api/v3/",
+    baseURL: "https://repospec.freedynamicdns.net/api/v3/",
     timeout: 20000,
     headers: {
         "Content-Type": "application/json",
