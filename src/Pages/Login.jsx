@@ -111,7 +111,7 @@ const Login = () => {
         {/* GitHub OAuth Login */}
         <a
           id="github-login-btn"
-          href="https://repospec.freedynamicdns.net/login/oauth2/code/github"
+          href="https://repospec.freedynamicdns.net/oauth2/authorization/github"
           className="w-full flex items-center justify-center gap-3 border border-gray-300 bg-white hover:bg-gray-50 text-gray-800 font-medium py-3 rounded-lg transition shadow-sm"
         >
           {/* GitHub SVG icon */}
